@@ -67,13 +67,22 @@ async function handleImport(file: File) {
   <div class="habit-list">
     <header class="header">
       <h1>Habits</h1>
-      <button class="menu-btn" @click="showMenu = !showMenu" aria-label="Menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <line x1="3" y1="12" x2="21" y2="12" />
-          <line x1="3" y1="18" x2="21" y2="18" />
-        </svg>
-      </button>
+      <div class="menu-wrapper">
+        <button class="menu-btn" @click="showMenu = !showMenu" aria-label="Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <DropdownMenu
+          v-if="showMenu"
+          @close="showMenu = false"
+          @add="showAddModal = true; showMenu = false"
+          @export="handleExport"
+          @import="handleImport"
+        />
+      </div>
     </header>
 
     <main class="main">
@@ -84,14 +93,6 @@ async function handleImport(file: File) {
         @click-habit="goToDetail"
       />
     </main>
-
-    <DropdownMenu
-      v-if="showMenu"
-      @close="showMenu = false"
-      @add="showAddModal = true; showMenu = false"
-      @export="handleExport"
-      @import="handleImport"
-    />
 
     <AddHabitModal
       v-if="showAddModal"
@@ -120,6 +121,10 @@ async function handleImport(file: File) {
 .header h1 {
   font-size: 1.5rem;
   font-weight: 600;
+}
+
+.menu-wrapper {
+  position: relative;
 }
 
 .menu-btn {

@@ -71,9 +71,10 @@ function onFileChange(e: Event) {
 }
 
 .dropdown-menu {
-  position: fixed;
-  top: 60px;
-  right: 1rem;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
   background-color: var(--bg-secondary);
   border-radius: 12px;
   padding: 0.5rem;
@@ -96,6 +97,7 @@ function onFileChange(e: Event) {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 44px;
 }
 
 .menu-item:hover {
