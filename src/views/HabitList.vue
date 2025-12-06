@@ -134,6 +134,7 @@ function cancelDelete() {
     />
 
     <footer class="footer">
+      <p>Made with 💚 by <a href="https://syofyanzuhad.dev" target="_blank" rel="noopener noreferrer">Syofyan Zuhad</a></p>
       <a
         href="https://github.com/syofyanzuhad/hobits"
         target="_blank"
