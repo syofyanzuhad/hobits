@@ -16,8 +16,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icons/*.png'],
       manifest: {
-        name: 'Habit Tracker',
-        short_name: 'Habits',
+        name: 'Hobits',
+        short_name: 'Hobits',
         description: 'Track your daily habits with this PWA',
         theme_color: '#1a1a1a',
         background_color: '#1a1a1a',
