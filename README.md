@@ -1,4 +1,4 @@
-# Habit Tracker PWA
+# Hobits
 
 A Progressive Web App for tracking daily habits with offline support, built with Vue 3 and TypeScript.
 

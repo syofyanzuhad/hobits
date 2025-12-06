@@ -1,6 +1,6 @@
 {
-  "name": "Habit Tracker",
-  "short_name": "Habits",
+  "name": "Hobits",
+  "short_name": "Hobits",
   "description": "Track your daily habits with this PWA",
   "start_url": "/",
   "display": "standalone",
