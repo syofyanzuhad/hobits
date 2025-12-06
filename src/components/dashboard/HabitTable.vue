@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Habit } from '@/utils/types'
 import { getDayName, getDayNumber } from '@/utils/dateUtils'
+import SwipeableRow from './SwipeableRow.vue'
 
 defineProps<{
   habits: Habit[]
@@ -10,6 +11,7 @@ defineProps<{
 const emit = defineEmits<{
   toggle: [habitId: string, date: string]
   clickHabit: [habitId: string]
+  delete: [habitId: string]
 }>()
 
 function isCompleted(habit: Habit, date: string): boolean {
@@ -43,32 +45,36 @@ function getCellClass(habit: Habit, date: string): string {
     </div>
 
     <!-- Habit Rows -->
-    <div
+    <SwipeableRow
       v-for="habit in habits"
       :key="habit.id"
-      class="habit-row"
-      role="button"
-      tabindex="0"
-      :aria-label="`View details for ${habit.name}`"
-      @click="emit('clickHabit', habit.id)"
-      @keydown.enter="emit('clickHabit', habit.id)"
+      @delete="emit('delete', habit.id)"
     >
-      <div class="habit-name">
-        <span class="color-dot" :style="{ backgroundColor: habit.color }"></span>
-        {{ habit.name }}
-      </div>
-      <button
-        v-for="date in dates"
-        :key="date"
-        :class="getCellClass(habit, date)"
-        :aria-label="`${habit.name} on ${date}: ${isCompleted(habit, date) ? 'completed' : 'not completed'}`"
-        :aria-pressed="isCompleted(habit, date)"
-        @click.stop="emit('toggle', habit.id, date)"
+      <div
+        class="habit-row"
+        role="button"
+        tabindex="0"
+        :aria-label="`View details for ${habit.name}`"
+        @click="emit('clickHabit', habit.id)"
+        @keydown.enter="emit('clickHabit', habit.id)"
       >
-        <span v-if="isCompleted(habit, date)" class="check-icon" aria-hidden="true">&#10003;</span>
-        <span v-else class="x-icon" aria-hidden="true">&#10005;</span>
-      </button>
-    </div>
+        <div class="habit-name">
+          <span class="color-dot" :style="{ backgroundColor: habit.color }"></span>
+          {{ habit.name }}
+        </div>
+        <button
+          v-for="date in dates"
+          :key="date"
+          :class="getCellClass(habit, date)"
+          :aria-label="`${habit.name} on ${date}: ${isCompleted(habit, date) ? 'completed' : 'not completed'}`"
+          :aria-pressed="isCompleted(habit, date)"
+          @click.stop="emit('toggle', habit.id, date)"
+        >
+          <span v-if="isCompleted(habit, date)" class="check-icon" aria-hidden="true">&#10003;</span>
+          <span v-else class="x-icon" aria-hidden="true">&#10005;</span>
+        </button>
+      </div>
+    </SwipeableRow>
   </div>
 </template>
 

@@ -8,6 +8,7 @@ import { exportData, importData } from '@/utils/storageUtils'
 import HabitTable from '@/components/dashboard/HabitTable.vue'
 import AddHabitModal from '@/components/dashboard/AddHabitModal.vue'
 import DropdownMenu from '@/components/dashboard/DropdownMenu.vue'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const router = useRouter()
 const habitStore = useHabitStore()
@@ -15,6 +16,8 @@ const toast = useToastStore()
 
 const showMenu = ref(false)
 const showAddModal = ref(false)
+const showDeleteConfirm = ref(false)
+const habitToDelete = ref<string | null>(null)
 
 const habits = computed(() => habitStore.habits)
 const dates = computed(() => getLastNDays(5))
@@ -61,12 +64,32 @@ async function handleImport(file: File) {
     toast.error('Error importing file: ' + (error as Error).message)
   }
 }
+
+function handleDeleteRequest(habitId: string) {
+  habitToDelete.value = habitId
+  showDeleteConfirm.value = true
+}
+
+function confirmDelete() {
+  if (habitToDelete.value) {
+    const habit = habitStore.habits.find(h => h.id === habitToDelete.value)
+    habitStore.deleteHabit(habitToDelete.value)
+    toast.success(`"${habit?.name}" deleted`)
+  }
+  showDeleteConfirm.value = false
+  habitToDelete.value = null
+}
+
+function cancelDelete() {
+  showDeleteConfirm.value = false
+  habitToDelete.value = null
+}
 </script>
 
 <template>
   <div class="habit-list">
     <header class="header">
-      <h1>Habits</h1>
+      <h1>Hobits</h1>
       <div class="menu-wrapper">
         <button class="menu-btn" @click="showMenu = !showMenu" aria-label="Menu">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -91,6 +114,7 @@ async function handleImport(file: File) {
         :dates="dates"
         @toggle="toggleCompletion"
         @click-habit="goToDetail"
+        @delete="handleDeleteRequest"
       />
     </main>
 
@@ -98,6 +122,15 @@ async function handleImport(file: File) {
       v-if="showAddModal"
       @close="showAddModal = false"
       @save="addNewHabit"
+    />
+
+    <ConfirmDialog
+      v-if="showDeleteConfirm"
+      title="Delete Habit"
+      message="Are you sure you want to delete this habit? All completion data will be lost."
+      confirm-text="Delete"
+      @confirm="confirmDelete"
+      @cancel="cancelDelete"
     />
   </div>
 </template>
