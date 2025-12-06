@@ -65,7 +65,7 @@ button {
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
-  min-height: 44px;
+  min-height: 30px;
 }
 
 button:hover {

@@ -88,7 +88,6 @@ function getCellClass(habit: Habit, date: string): string {
 .table-header {
   display: grid;
   grid-template-columns: 1fr repeat(5, 50px);
-  gap: 4px;
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--bg-tertiary);
 }
@@ -129,8 +128,7 @@ function getCellClass(habit: Habit, date: string): string {
 .habit-row {
   display: grid;
   grid-template-columns: 1fr repeat(5, 50px);
-  gap: 4px;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 1rem;
   border-bottom: 1px solid var(--bg-tertiary);
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -165,8 +163,8 @@ function getCellClass(habit: Habit, date: string): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 8px;
   margin: auto;
   cursor: pointer;
