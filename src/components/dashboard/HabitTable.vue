@@ -47,21 +47,27 @@ function getCellClass(habit: Habit, date: string): string {
       v-for="habit in habits"
       :key="habit.id"
       class="habit-row"
+      role="button"
+      tabindex="0"
+      :aria-label="`View details for ${habit.name}`"
       @click="emit('clickHabit', habit.id)"
+      @keydown.enter="emit('clickHabit', habit.id)"
     >
       <div class="habit-name">
         <span class="color-dot" :style="{ backgroundColor: habit.color }"></span>
         {{ habit.name }}
       </div>
-      <div
+      <button
         v-for="date in dates"
         :key="date"
         :class="getCellClass(habit, date)"
+        :aria-label="`${habit.name} on ${date}: ${isCompleted(habit, date) ? 'completed' : 'not completed'}`"
+        :aria-pressed="isCompleted(habit, date)"
         @click.stop="emit('toggle', habit.id, date)"
       >
-        <span v-if="isCompleted(habit, date)" class="check-icon">&#10003;</span>
-        <span v-else class="x-icon">&#10005;</span>
-      </div>
+        <span v-if="isCompleted(habit, date)" class="check-icon" aria-hidden="true">&#10003;</span>
+        <span v-else class="x-icon" aria-hidden="true">&#10005;</span>
+      </button>
     </div>
   </div>
 </template>
@@ -160,6 +166,8 @@ function getCellClass(habit: Habit, date: string): string {
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 1rem;
+  border: none;
+  padding: 0;
 }
 
 .completion-cell:hover {
