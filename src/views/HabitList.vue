@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useHabitStore } from '@/stores/habitStore'
+import { useToastStore } from '@/stores/toastStore'
 import { getLastNDays } from '@/utils/dateUtils'
 import { exportData, importData } from '@/utils/storageUtils'
 import HabitTable from '@/components/dashboard/HabitTable.vue'
@@ -10,6 +11,7 @@ import DropdownMenu from '@/components/dashboard/DropdownMenu.vue'
 
 const router = useRouter()
 const habitStore = useHabitStore()
+const toast = useToastStore()
 
 const showMenu = ref(false)
 const showAddModal = ref(false)
@@ -26,8 +28,13 @@ function toggleCompletion(habitId: string, date: string) {
 }
 
 function addNewHabit(name: string) {
+  if (!name.trim()) {
+    toast.error('Habit name cannot be empty')
+    return
+  }
   habitStore.addHabit(name)
   showAddModal.value = false
+  toast.success('Habit created successfully')
 }
 
 function goToDetail(habitId: string) {
@@ -35,8 +42,13 @@ function goToDetail(habitId: string) {
 }
 
 function handleExport() {
-  exportData()
-  showMenu.value = false
+  try {
+    exportData()
+    showMenu.value = false
+    toast.success('Data exported successfully')
+  } catch (error) {
+    toast.error('Failed to export data')
+  }
 }
 
 async function handleImport(file: File) {
@@ -44,8 +56,9 @@ async function handleImport(file: File) {
     const data = await importData(file)
     habitStore.setHabits(data.habits)
     showMenu.value = false
+    toast.success(`Imported ${data.habits.length} habits`)
   } catch (error) {
-    alert('Error importing file: ' + (error as Error).message)
+    toast.error('Error importing file: ' + (error as Error).message)
   }
 }
 </script>

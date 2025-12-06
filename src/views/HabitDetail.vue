@@ -2,20 +2,24 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useHabitStore } from '@/stores/habitStore'
+import { useToastStore } from '@/stores/toastStore'
 import MonthCalendar from '@/components/detail/MonthCalendar.vue'
 import HeatmapThreeMonths from '@/components/detail/HeatmapThreeMonths.vue'
 import YearChart from '@/components/detail/YearChart.vue'
 import NotesSection from '@/components/detail/NotesSection.vue'
 import EditHabitModal from '@/components/detail/EditHabitModal.vue'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const router = useRouter()
 const route = useRoute()
 const habitStore = useHabitStore()
+const toast = useToastStore()
 
 const habitId = computed(() => route.params.id as string)
 const habit = computed(() => habitStore.getHabitById(habitId.value))
 
 const showEditModal = ref(false)
+const showDeleteConfirm = ref(false)
 const currentYear = ref(new Date().getFullYear())
 const currentMonth = ref(new Date().getMonth())
 
@@ -54,15 +58,24 @@ function updateNotes(notes: string) {
 }
 
 function updateHabitName(name: string) {
+  if (!name.trim()) {
+    toast.error('Habit name cannot be empty')
+    return
+  }
   habitStore.updateHabit(habitId.value, { name })
   showEditModal.value = false
+  toast.success('Habit updated')
 }
 
-function deleteHabit() {
-  if (confirm('Are you sure you want to delete this habit? This cannot be undone.')) {
-    habitStore.deleteHabit(habitId.value)
-    router.push('/')
-  }
+function requestDelete() {
+  showEditModal.value = false
+  showDeleteConfirm.value = true
+}
+
+function confirmDelete() {
+  habitStore.deleteHabit(habitId.value)
+  toast.success('Habit deleted')
+  router.push('/')
 }
 </script>
 
@@ -121,7 +134,17 @@ function deleteHabit() {
         :habit="habit"
         @close="showEditModal = false"
         @save="updateHabitName"
-        @delete="deleteHabit"
+        @delete="requestDelete"
+      />
+
+      <ConfirmDialog
+        v-if="showDeleteConfirm"
+        title="Delete Habit"
+        message="Are you sure you want to delete this habit? All completion history will be lost."
+        confirm-text="Delete"
+        :danger="true"
+        @confirm="confirmDelete"
+        @cancel="showDeleteConfirm = false"
       />
     </template>
   </div>
