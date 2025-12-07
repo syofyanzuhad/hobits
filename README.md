@@ -1,3 +1,30 @@
+<p align='center'>
+  <!-- <a href='https://github.com/syofyanzuhad/hobits'>
+	  <img src='https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2Fsyofyanzuhad%2Fhobits.json%3Fcolor%3Dgreen'>
+	</a> -->
+  <a target="_blank" href="https://github.com/syofyanzuhad/hobits">
+    <img src="https://img.shields.io/github/last-commit/syofyanzuhad/hobits" />
+  </a>
+	<a href="https://github.com/syofyanzuhad/hobits/issues">
+    <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/syofyanzuhad/hobits">
+  </a>
+	<a href="https://github.com/syofyanzuhad/hobits/pulls">
+		<img src="https://img.shields.io/github/issues-pr/syofyanzuhad/hobits" alt="Pull Requests Badge"/>
+	</a>
+  <a href="https://github.com/syofyanzuhad/hobits/graphs/contributors">
+		<img alt="GitHub contributors" src="https://img.shields.io/github/contributors/syofyanzuhad/hobits?color=2b9348">
+	</a>
+  <a href='https://github.com/syofyanzuhad/hobits'>
+		<img src='https://img.shields.io/github/forks/syofyanzuhad/hobits'>
+	</a>
+  <a href='https://github.com/syofyanzuhad/hobits'>
+		<img src='https://img.shields.io/github/stars/syofyanzuhad/hobits'>
+	</a>
+  <a href='https://github.com/syofyanzuhad/hobits'>
+    <img src="https://visitor-badge.laobi.icu/badge?page_id=syofyanzuhad.hobits" />
+  </a>
+</p>
+
 # Hobits
 
 A Progressive Web App for tracking daily habits with offline support, built with Vue 3 and TypeScript.
