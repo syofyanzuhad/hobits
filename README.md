@@ -26,7 +26,6 @@
 </p>
 
 # Hobits
-
 A Progressive Web App for tracking daily habits with offline support, built with Vue 3 and TypeScript.
 
 ## Features
@@ -37,6 +36,11 @@ A Progressive Web App for tracking daily habits with offline support, built with
 - **PWA**: Installable on mobile and desktop
 - **Dark Theme**: Modern dark UI design
 - **Export/Import**: Backup and restore data as JSON
+
+## Screenshots
+
+<img width="1170" height="2532" alt="IMG_9702" src="https://github.com/user-attachments/assets/c8c970c4-26d7-43d3-a9eb-97a7e35650e9" />
+<img width="1170" height="2532" alt="IMG_9703" src="https://github.com/user-attachments/assets/10592caa-2365-4a3a-81fe-c2c3a8f8b42e" />
 
 ## Tech Stack
 
