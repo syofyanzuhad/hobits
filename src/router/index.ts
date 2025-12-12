@@ -13,6 +13,11 @@ const router = createRouter({
       name: 'habit-detail',
       component: () => import('@/views/HabitDetail.vue'),
       props: true
+    },
+    {
+      path: '/stats',
+      name: 'statistics',
+      component: () => import('@/views/Statistics.vue')
     }
   ]
 })

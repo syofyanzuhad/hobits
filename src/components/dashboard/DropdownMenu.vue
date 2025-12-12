@@ -65,6 +65,16 @@ async function handleInstall() {
       Import Data
     </button>
 
+    <router-link to="/stats" class="menu-item" @click="emit('close')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 3v18h18" />
+        <rect x="7" y="10" width="3" height="8" rx="1" />
+        <rect x="12" y="6" width="3" height="12" rx="1" />
+        <rect x="17" y="12" width="3" height="6" rx="1" />
+      </svg>
+      Statistics
+    </router-link>
+
     <div v-if="isInstallable && !isInstalled" class="menu-divider"></div>
 
     <button

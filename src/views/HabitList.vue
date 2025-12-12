@@ -9,6 +9,8 @@ import HabitTable from '@/components/dashboard/HabitTable.vue'
 import AddHabitModal from '@/components/dashboard/AddHabitModal.vue'
 import DropdownMenu from '@/components/dashboard/DropdownMenu.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import ProductivityHeatmap from '@/components/dashboard/ProductivityHeatmap.vue'
+import StatsSummary from '@/components/dashboard/StatsSummary.vue'
 
 const router = useRouter()
 const habitStore = useHabitStore()
@@ -109,6 +111,19 @@ function cancelDelete() {
     </header>
 
     <main class="main">
+      <ProductivityHeatmap
+        v-if="habits.length > 0"
+        :habits="habits"
+        :collapsible="true"
+        class="productivity-section"
+      />
+
+      <StatsSummary
+        v-if="habits.length > 0"
+        :habits="habits"
+        class="stats-section"
+      />
+
       <HabitTable
         :habits="habits"
         :dates="dates"
@@ -192,6 +207,14 @@ function cancelDelete() {
 
 .main {
   padding-bottom: 2rem;
+}
+
+.productivity-section {
+  margin-bottom: 1rem;
+}
+
+.stats-section {
+  margin-bottom: 1.5rem;
 }
 
 .footer {
