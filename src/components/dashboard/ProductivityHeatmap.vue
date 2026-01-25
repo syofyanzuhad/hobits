@@ -30,22 +30,25 @@ interface HeatmapMonth {
   days: HeatmapDay[]
 }
 
-function getLevel(count: number): number {
-  if (count === 0) return 0
-  if (count <= 2) return 1
-  if (count <= 4) return 2
-  if (count <= 6) return 3
+function getLevel(count: number, max: number): number {
+  if (count === 0 || max === 0) return 0
+  const ratio = count / max
+  if (ratio <= 0.25) return 1
+  if (ratio <= 0.5) return 2
+  if (ratio <= 0.75) return 3
   return 4
 }
 
 const heatmapData = computed(() => {
   const months = getLastNMonths(props.monthsRange)
-  const result: HeatmapMonth[] = []
+
+  // First pass: collect all days with counts
+  const allDays: { month: string; day: Omit<HeatmapDay, 'level'> }[] = []
+  let maxCount = 0
 
   for (const { month, year, label } of months) {
     const firstDay = new Date(year, month, 1)
     const lastDay = new Date(year, month + 1, 0)
-    const days: HeatmapDay[] = []
 
     for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
       const dateString = formatDate(d)
@@ -58,15 +61,38 @@ const heatmapData = computed(() => {
         }
       }
 
-      days.push({
-        date: dateString,
-        count,
-        level: getLevel(count),
-        dayOfWeek: d.getDay() === 0 ? 6 : d.getDay() - 1 // Monday = 0, Sunday = 6
+      if (count > maxCount) maxCount = count
+
+      allDays.push({
+        month: label,
+        day: {
+          date: dateString,
+          count,
+          dayOfWeek: d.getDay() === 0 ? 6 : d.getDay() - 1
+        }
       })
     }
+  }
 
-    result.push({ label, days })
+  // Second pass: build result with relative levels
+  const result: HeatmapMonth[] = []
+  const monthMap = new Map<string, HeatmapDay[]>()
+
+  for (const { month, day } of allDays) {
+    if (!monthMap.has(month)) {
+      monthMap.set(month, [])
+    }
+    monthMap.get(month)!.push({
+      ...day,
+      level: getLevel(day.count, maxCount)
+    })
+  }
+
+  for (const { label } of months) {
+    result.push({
+      label,
+      days: monthMap.get(label) || []
+    })
   }
 
   return result
@@ -140,11 +166,11 @@ function toggle() {
       <div class="legend">
         <span class="legend-label">Less</span>
         <div class="legend-cells">
-          <div class="heatmap-cell level-0" title="0 habits"></div>
-          <div class="heatmap-cell level-1" title="1-2 habits"></div>
-          <div class="heatmap-cell level-2" title="3-4 habits"></div>
-          <div class="heatmap-cell level-3" title="5-6 habits"></div>
-          <div class="heatmap-cell level-4" title="7+ habits"></div>
+          <div class="heatmap-cell level-0" title="No habits"></div>
+          <div class="heatmap-cell level-1" title="1-25% of best day"></div>
+          <div class="heatmap-cell level-2" title="26-50% of best day"></div>
+          <div class="heatmap-cell level-3" title="51-75% of best day"></div>
+          <div class="heatmap-cell level-4" title="76-100% of best day"></div>
         </div>
         <span class="legend-label">More</span>
       </div>
