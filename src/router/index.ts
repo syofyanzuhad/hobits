@@ -18,6 +18,12 @@ const router = createRouter({
       path: '/stats',
       name: 'statistics',
       component: () => import('@/views/Statistics.vue')
+    },
+    {
+      path: '/day/:date',
+      name: 'day-detail',
+      component: () => import('@/views/DayDetail.vue'),
+      props: true
     }
   ]
 })

@@ -12,6 +12,7 @@ const emit = defineEmits<{
   toggle: [habitId: string, date: string]
   clickHabit: [habitId: string]
   delete: [habitId: string]
+  clickDate: [date: string]
 }>()
 
 function isCompleted(habit: Habit, date: string): boolean {
@@ -28,14 +29,16 @@ function getCellClass(habit: Habit, date: string): string {
     <!-- Header -->
     <div class="table-header">
       <div class="habit-name-header"></div>
-      <div
+      <button
         v-for="date in dates"
         :key="date"
         class="date-header"
+        @click="emit('clickDate', date)"
+        :aria-label="`View details for ${date}`"
       >
         <span class="day-name">{{ getDayName(date) }}</span>
         <span class="day-number">{{ getDayNumber(date) }}</span>
-      </div>
+      </button>
     </div>
 
     <!-- Empty State -->
@@ -101,6 +104,17 @@ function getCellClass(habit: Habit, date: string): string {
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  min-height: auto;
+}
+
+.date-header:hover {
+  background: var(--bg-tertiary);
 }
 
 .day-name {

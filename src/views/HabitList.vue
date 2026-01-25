@@ -46,6 +46,10 @@ function goToDetail(habitId: string) {
   router.push(`/habit/${habitId}`)
 }
 
+function goToDayDetail(date: string) {
+  router.push(`/day/${date}`)
+}
+
 function handleExport() {
   try {
     exportData()
@@ -116,6 +120,7 @@ function cancelDelete() {
         :habits="habits"
         :collapsible="true"
         class="productivity-section"
+        @click-date="goToDayDetail"
       />
 
       <StatsSummary
@@ -129,6 +134,7 @@ function cancelDelete() {
         :dates="dates"
         @toggle="toggleCompletion"
         @click-habit="goToDetail"
+        @click-date="goToDayDetail"
         @delete="handleDeleteRequest"
       />
     </main>

@@ -12,6 +12,10 @@ const props = withDefaults(defineProps<{
   monthsRange: 4
 })
 
+const emit = defineEmits<{
+  clickDate: [date: string]
+}>()
+
 const isExpanded = ref(!props.collapsible)
 
 interface HeatmapDay {
@@ -120,11 +124,13 @@ function toggle() {
           <div v-for="monthData in heatmapData" :key="monthData.label" class="month-column">
             <div class="month-label">{{ monthData.label }}</div>
             <div class="month-cells">
-              <div
+              <button
                 v-for="(day, index) in monthData.days"
                 :key="index"
                 :class="getCellClass(day.level)"
                 :title="getTooltip(day)"
+                @click="emit('clickDate', day.date)"
+                :aria-label="getTooltip(day)"
               />
             </div>
           </div>
@@ -245,10 +251,15 @@ function toggle() {
   height: 12px;
   border-radius: 2px;
   transition: all 0.2s ease;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  min-height: auto;
 }
 
 .heatmap-cell:hover {
-  transform: scale(1.2);
+  transform: scale(1.3);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
 
 .heatmap-cell.level-0 {
