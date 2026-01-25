@@ -148,6 +148,18 @@ function cancelDelete() {
       @cancel="cancelDelete"
     />
 
+    <!-- Floating Action Button -->
+    <button
+      class="fab"
+      @click="showAddModal = true"
+      aria-label="Add new habit"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+    </button>
+
     <footer class="footer">
       <p>Made with 💚 by <a href="https://syofyanzuhad.dev" target="_blank" rel="noopener noreferrer">Syofyan Zuhad</a></p>
       <a
@@ -237,5 +249,40 @@ function cancelDelete() {
 .github-link:hover {
   color: var(--text-primary);
   background-color: var(--bg-secondary);
+}
+
+.fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent-color, #10b981);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 100;
+}
+
+.fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 600px) {
+  .fab {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
 }
 </style>
