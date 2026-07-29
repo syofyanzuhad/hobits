@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
 import ToastContainer from '@/components/ToastContainer.vue'
+import InstallPrompt from '@/components/InstallPrompt.vue'
 
 const isOffline = ref(!navigator.onLine)
 
@@ -35,6 +36,7 @@ onUnmounted(() => {
     </transition>
   </RouterView>
   <ToastContainer />
+  <InstallPrompt />
 </template>
 
 <style>
