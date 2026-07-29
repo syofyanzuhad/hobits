@@ -11,6 +11,7 @@ import DropdownMenu from '@/components/dashboard/DropdownMenu.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import ProductivityHeatmap from '@/components/dashboard/ProductivityHeatmap.vue'
 import StatsSummary from '@/components/dashboard/StatsSummary.vue'
+import EditHabitModal from '@/components/detail/EditHabitModal.vue'
 
 const router = useRouter()
 const habitStore = useHabitStore()
@@ -18,10 +19,13 @@ const toast = useToastStore()
 
 const showMenu = ref(false)
 const showAddModal = ref(false)
+const showEditModal = ref(false)
 const showDeleteConfirm = ref(false)
 const habitToDelete = ref<string | null>(null)
+const habitToEditId = ref<string | null>(null)
 
 const habits = computed(() => habitStore.habits)
+const habitToEdit = computed(() => habitStore.habits.find(h => h.id === habitToEditId.value))
 const dates = computed(() => getLastNDays(5))
 
 onMounted(() => {
@@ -86,6 +90,32 @@ function confirmDelete() {
   habitToDelete.value = null
 }
 
+function handleEditRequest(habitId: string) {
+  habitToEditId.value = habitId
+  showEditModal.value = true
+}
+
+function saveHabitEdit(name: string) {
+  if (habitToEditId.value) {
+    habitStore.updateHabit(habitToEditId.value, { name })
+    toast.success('Habit updated')
+  }
+  showEditModal.value = false
+  habitToEditId.value = null
+}
+
+function closeEditModal() {
+  showEditModal.value = false
+  habitToEditId.value = null
+}
+
+function handleEditDelete() {
+  if (habitToEditId.value) {
+    handleDeleteRequest(habitToEditId.value)
+  }
+  closeEditModal()
+}
+
 function cancelDelete() {
   showDeleteConfirm.value = false
   habitToDelete.value = null
@@ -136,6 +166,7 @@ function cancelDelete() {
         @click-habit="goToDetail"
         @click-date="goToDayDetail"
         @delete="handleDeleteRequest"
+        @edit="handleEditRequest"
       />
     </main>
 
@@ -143,6 +174,14 @@ function cancelDelete() {
       v-if="showAddModal"
       @close="showAddModal = false"
       @save="addNewHabit"
+    />
+
+    <EditHabitModal
+      v-if="showEditModal && habitToEdit"
+      :habit="habitToEdit"
+      @close="closeEditModal"
+      @save="saveHabitEdit"
+      @delete="handleEditDelete"
     />
 
     <ConfirmDialog

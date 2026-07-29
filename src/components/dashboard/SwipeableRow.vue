@@ -7,9 +7,10 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   delete: []
+  edit: []
 }>()
 
-const threshold = props.deleteThreshold ?? 80
+const threshold = props.deleteThreshold ?? 160
 const startX = ref(0)
 const currentX = ref(0)
 const isDragging = ref(false)
@@ -95,6 +96,11 @@ function handleDelete() {
   isDeleting.value = false
 }
 
+function handleEdit() {
+  emit('edit')
+  isDeleting.value = false
+}
+
 function resetSwipe() {
   isDeleting.value = false
 }
@@ -104,16 +110,21 @@ defineExpose({ resetSwipe })
 
 <template>
   <div class="swipeable-container">
-    <div
-      class="delete-action"
-      :class="{ visible: showDelete || isDeleting }"
-      @click="handleDelete"
-    >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="3 6 5 6 21 6" />
-        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-      </svg>
-      <span>Delete</span>
+    <div class="actions-container" :class="{ visible: showDelete || isDeleting }">
+      <div class="action-btn edit-action" @click="handleEdit">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+        </svg>
+        <span>Edit</span>
+      </div>
+      <div class="action-btn delete-action" @click="handleDelete">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        </svg>
+        <span>Delete</span>
+      </div>
     </div>
     <div
       class="swipeable-content"
@@ -135,13 +146,23 @@ defineExpose({ resetSwipe })
   overflow: hidden;
 }
 
-.delete-action {
+.actions-container {
   position: absolute;
   right: 0;
   top: 0;
   bottom: 0;
-  width: 80px;
-  background-color: var(--danger);
+  width: 160px;
+  display: flex;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.actions-container.visible {
+  opacity: 1;
+}
+
+.action-btn {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -150,15 +171,20 @@ defineExpose({ resetSwipe })
   color: white;
   font-size: 0.75rem;
   font-weight: 500;
-  opacity: 0;
-  transition: opacity 0.2s ease;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.delete-action.visible {
-  opacity: 1;
+.edit-action {
+  background-color: var(--accent, #3b82f6);
+}
+.edit-action:hover {
+  background-color: #2563eb;
 }
 
+.delete-action {
+  background-color: var(--danger);
+}
 .delete-action:hover {
   background-color: #ff4444;
 }

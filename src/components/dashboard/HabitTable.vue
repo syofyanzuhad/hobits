@@ -12,6 +12,7 @@ const emit = defineEmits<{
   toggle: [habitId: string, date: string]
   clickHabit: [habitId: string]
   delete: [habitId: string]
+  edit: [habitId: string]
   clickDate: [date: string]
 }>()
 
@@ -52,6 +53,7 @@ function getCellClass(habit: Habit, date: string): string {
       v-for="habit in habits"
       :key="habit.id"
       @delete="emit('delete', habit.id)"
+      @edit="emit('edit', habit.id)"
     >
       <div
         class="habit-row"
@@ -61,7 +63,7 @@ function getCellClass(habit: Habit, date: string): string {
         @click="emit('clickHabit', habit.id)"
         @keydown.enter="emit('clickHabit', habit.id)"
       >
-        <div class="habit-name">
+        <div class="habit-name" :title="habit.name">
           <span class="color-dot" :style="{ backgroundColor: habit.color }"></span>
           {{ habit.name }}
         </div>
