@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { Habit } from '@/utils/types'
 import { getDayName, getDayNumber } from '@/utils/dateUtils'
 import SwipeableRow from './SwipeableRow.vue'
@@ -15,6 +16,34 @@ const emit = defineEmits<{
   edit: [habitId: string]
   clickDate: [date: string]
 }>()
+
+const tooltipHabit = ref<Habit | null>(null)
+let pressTimer: number | null = null
+let isLongPress = false
+
+function startPress(habit: Habit) {
+  isLongPress = false
+  if (pressTimer) clearTimeout(pressTimer)
+  pressTimer = window.setTimeout(() => {
+    isLongPress = true
+    tooltipHabit.value = habit
+  }, 500)
+}
+
+function cancelPress() {
+  if (pressTimer) {
+    clearTimeout(pressTimer)
+    pressTimer = null
+  }
+}
+
+function handleRowClick(habitId: string, event: Event) {
+  if (isLongPress) {
+    isLongPress = false
+    return
+  }
+  emit('clickHabit', habitId)
+}
 
 function isCompleted(habit: Habit, date: string): boolean {
   return habit.completions[date] === true
@@ -60,8 +89,14 @@ function getCellClass(habit: Habit, date: string): string {
         role="button"
         tabindex="0"
         :aria-label="`View details for ${habit.name}`"
-        @click="emit('clickHabit', habit.id)"
+        @click="(e) => handleRowClick(habit.id, e)"
         @keydown.enter="emit('clickHabit', habit.id)"
+        @touchstart="startPress(habit)"
+        @touchend="cancelPress"
+        @touchmove="cancelPress"
+        @mousedown="startPress(habit)"
+        @mouseup="cancelPress"
+        @mouseleave="cancelPress"
       >
         <div class="habit-name" :title="habit.name">
           <span class="color-dot" :style="{ backgroundColor: habit.color }"></span>
@@ -80,6 +115,13 @@ function getCellClass(habit: Habit, date: string): string {
         </button>
       </div>
     </SwipeableRow>
+
+    <!-- Custom Long Press Tooltip for Mobile -->
+    <div v-if="tooltipHabit" class="tooltip-overlay" @click.stop="tooltipHabit = null">
+      <div class="tooltip-box">
+        {{ tooltipHabit.name }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -210,5 +252,40 @@ function getCellClass(habit: Habit, date: string): string {
 
 .x-icon {
   font-size: 0.85rem;
+}
+
+.tooltip-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+}
+
+.tooltip-box {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 1.2rem 1.5rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  word-break: break-word;
+  text-align: center;
+  max-width: 90%;
+  animation: zoomIn 0.2s ease-out;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 </style>
