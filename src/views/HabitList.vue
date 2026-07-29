@@ -12,6 +12,7 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import ProductivityHeatmap from '@/components/dashboard/ProductivityHeatmap.vue'
 import StatsSummary from '@/components/dashboard/StatsSummary.vue'
 import EditHabitModal from '@/components/detail/EditHabitModal.vue'
+import { usePWAInstall } from '@/composables/usePWAInstall'
 
 const router = useRouter()
 const habitStore = useHabitStore()
@@ -23,6 +24,17 @@ const showEditModal = ref(false)
 const showDeleteConfirm = ref(false)
 const habitToDelete = ref<string | null>(null)
 const habitToEditId = ref<string | null>(null)
+
+const { isInstallable, isInstalled, installApp } = usePWAInstall()
+
+async function handleInstall() {
+  const success = await installApp()
+  if (success) {
+    toast.success('App installed successfully!')
+  } else if (!isInstallable.value) {
+    toast.info("Please use your browser's 'Add to Home Screen' or 'Install' option in the menu.")
+  }
+}
 
 const habits = computed(() => habitStore.habits)
 const habitToEdit = computed(() => habitStore.habits.find(h => h.id === habitToEditId.value))
@@ -126,21 +138,36 @@ function cancelDelete() {
   <div class="habit-list">
     <header class="header">
       <h1>Hobits</h1>
-      <div class="menu-wrapper">
-        <button class="menu-btn" @click="showMenu = !showMenu" aria-label="Menu">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="18" x2="21" y2="18" />
+      <div class="header-actions">
+        <button
+          v-if="!isInstalled"
+          class="header-install-btn"
+          @click="handleInstall"
+          aria-label="Install App"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
+          <span class="install-text">Install App</span>
         </button>
-        <DropdownMenu
-          v-if="showMenu"
-          @close="showMenu = false"
-          @add="showAddModal = true; showMenu = false"
-          @export="handleExport"
-          @import="handleImport"
-        />
+        <div class="menu-wrapper">
+          <button class="menu-btn" @click="showMenu = !showMenu" aria-label="Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <DropdownMenu
+            v-if="showMenu"
+            @close="showMenu = false"
+            @add="showAddModal = true; showMenu = false"
+            @export="handleExport"
+            @import="handleImport"
+          />
+        </div>
       </div>
     </header>
 
@@ -247,6 +274,31 @@ function cancelDelete() {
   font-weight: 600;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-install-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  background-color: var(--accent-color, #10b981);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.header-install-btn:hover {
+  filter: brightness(1.1);
+}
+
 .menu-wrapper {
   position: relative;
 }
@@ -339,6 +391,15 @@ function cancelDelete() {
   .fab {
     bottom: 1.5rem;
     right: 1.5rem;
+  }
+  
+  .install-text {
+    display: none;
+  }
+  
+  .header-install-btn {
+    padding: 0.5rem;
+    border-radius: 50%;
   }
 }
 </style>

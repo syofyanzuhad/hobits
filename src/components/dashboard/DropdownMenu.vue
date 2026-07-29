@@ -32,6 +32,9 @@ async function handleInstall() {
   if (success) {
     toast.success('App installed successfully!')
     emit('close')
+  } else if (!isInstallable.value) {
+    toast.info("Please use your browser's 'Add to Home Screen' or 'Install' option in the menu.")
+    emit('close')
   }
 }
 </script>
@@ -75,10 +78,10 @@ async function handleInstall() {
       Statistics
     </router-link>
 
-    <div v-if="isInstallable && !isInstalled" class="menu-divider"></div>
+    <div v-if="!isInstalled" class="menu-divider"></div>
 
     <button
-      v-if="isInstallable && !isInstalled"
+      v-if="!isInstalled"
       class="menu-item menu-item-install"
       @click="handleInstall"
     >
@@ -158,7 +161,7 @@ async function handleInstall() {
 }
 
 .menu-item-install {
-  color: var(--accent);
+  color: var(--accent-color, #10b981);
 }
 
 .menu-divider {
