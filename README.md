@@ -39,8 +39,11 @@ A Progressive Web App for tracking daily habits with offline support, built with
 
 ## Screenshots
 
-<img width="400" alt="IMG_9703" src="https://github.com/user-attachments/assets/10592caa-2365-4a3a-81fe-c2c3a8f8b42e" />
-<img width="400" alt="IMG_9702" src="https://github.com/user-attachments/assets/c8c970c4-26d7-43d3-a9eb-97a7e35650e9" />
+
+<img width="400" alt="hobits" src="https://github.com/user-attachments/assets/c5cdec2d-b1b5-448a-aed0-fd8632b09e1e" />
+<img width="400" alt="hobits-stat" src="https://github.com/user-attachments/assets/1e505b5a-e86d-4cf2-8f3f-6f850d28511e" />
+<!-- <img width="400" alt="IMG_9703" src="https://github.com/user-attachments/assets/10592caa-2365-4a3a-81fe-c2c3a8f8b42e" />
+<img width="400" alt="IMG_9702" src="https://github.com/user-attachments/assets/c8c970c4-26d7-43d3-a9eb-97a7e35650e9" /> -->
 
 ## Tech Stack
 
@@ -168,10 +171,4 @@ MIT
 
 ## Star history
 
-<a href="https://www.star-history.com/#syofyanzuhad/hobits&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=syofyanzuhad/hobits&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=syofyanzuhad/hobits&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=syofyanzuhad/hobits&type=date&legend=top-left" />
- </picture>
-</a>
+[![Star History Chart](https://api.star-history.com/chart?repos=syofyanzuhad/hobits&type=date&legend=top-left&sealed_token=OPXfZjIhBz2cfheSE3_2qQ3DQRX5yYzFiJkzxX-ynUX9k1IlLsRjlIVtUWAvbxRvudwNLgBhIx1Hyn4M-M_8NPKRRiHp77TE3b_EGUd0Zw8rZywpnvltQQ)](https://www.star-history.com/?repos=syofyanzuhad%2Fhobits&type=date&legend=top-left)
