@@ -43,6 +43,7 @@ body {
 #app {
   min-height: 100vh;
   min-height: 100dvh;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
 }
 
 a {

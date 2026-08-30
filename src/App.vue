@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
 import ToastContainer from '@/components/ToastContainer.vue'
 import InstallPrompt from '@/components/InstallPrompt.vue'
+import BottomNav from '@/components/navigation/BottomNav.vue'
 
 const isOffline = ref(!navigator.onLine)
 
@@ -35,6 +36,7 @@ onUnmounted(() => {
       <component :is="Component" />
     </transition>
   </RouterView>
+  <BottomNav />
   <ToastContainer />
   <InstallPrompt />
 </template>
