@@ -5,17 +5,42 @@ export function formatDate(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
-export function getLastNDays(n: number): string[] {
+export function getNDays(n: number, offsetDays: number = 0): string[] {
   const dates: string[] = []
   const today = new Date()
 
   for (let i = n - 1; i >= 0; i--) {
     const date = new Date(today)
-    date.setDate(today.getDate() - i)
+    date.setDate(today.getDate() - offsetDays - i)
     dates.push(formatDate(date))
   }
 
   return dates
+}
+
+export function getLastNDays(n: number): string[] {
+  return getNDays(n, 0)
+}
+
+export function formatDateRange(dates: string[]): string {
+  if (dates.length === 0) return ''
+  const start = new Date(dates[0] + 'T00:00:00')
+  const end = new Date(dates[dates.length - 1] + 'T00:00:00')
+
+  const startDay = start.getDate()
+  const endDay = end.getDate()
+  const startMonth = getShortMonthName(start.getMonth())
+  const endMonth = getShortMonthName(end.getMonth())
+  const startYear = start.getFullYear()
+  const endYear = end.getFullYear()
+
+  if (startYear === endYear) {
+    if (startMonth === endMonth) {
+      return `${startDay} - ${endDay} ${startMonth} ${startYear}`
+    }
+    return `${startDay} ${startMonth} - ${endDay} ${endMonth} ${startYear}`
+  }
+  return `${startDay} ${startMonth} ${startYear} - ${endDay} ${endMonth} ${endYear}`
 }
 
 export function getDayName(dateString: string): string {

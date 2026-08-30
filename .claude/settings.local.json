@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__serena__list_dir",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(curl:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: add Vue Router, Pinia, and PWA dependencies\n\n- Install vue-router for routing\n- Install pinia for state management\n- Install vite-plugin-pwa for PWA functionality\n- Configure path alias ''@'' for src directory\n- Add PWA plugin configuration with manifest and workbox\n- Add Vue module declaration for TypeScript\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(cat:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

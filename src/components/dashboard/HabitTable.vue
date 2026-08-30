@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { Habit } from '@/utils/types'
-import { getDayName, getDayNumber } from '@/utils/dateUtils'
+import { getDayName, getDayNumber, formatDateRange } from '@/utils/dateUtils'
 import SwipeableRow from './SwipeableRow.vue'
 
-defineProps<{
+const props = defineProps<{
   habits: Habit[]
   dates: string[]
+  offsetDays?: number
 }>()
 
 const emit = defineEmits<{
@@ -15,7 +16,12 @@ const emit = defineEmits<{
   delete: [habitId: string]
   edit: [habitId: string]
   clickDate: [date: string]
+  prevDays: []
+  nextDays: []
+  resetToday: []
 }>()
+
+const dateRangeLabel = computed(() => formatDateRange(props.dates))
 
 const tooltipHabit = ref<Habit | null>(null)
 let pressTimer: number | null = null
@@ -37,7 +43,7 @@ function cancelPress() {
   }
 }
 
-function handleRowClick(habitId: string, event: Event) {
+function handleRowClick(habitId: string) {
   if (isLongPress) {
     isLongPress = false
     return
@@ -55,21 +61,60 @@ function getCellClass(habit: Habit, date: string): string {
 </script>
 
 <template>
-  <div class="habit-table">
-    <!-- Header -->
-    <div class="table-header">
-      <div class="habit-name-header"></div>
+  <div class="habit-table-container">
+    <!-- Compact Date Navigation -->
+    <div class="table-nav-bar">
       <button
-        v-for="date in dates"
-        :key="date"
-        class="date-header"
-        @click="emit('clickDate', date)"
-        :aria-label="`View details for ${date}`"
+        class="nav-arrow-btn"
+        @click="emit('prevDays')"
+        aria-label="Previous days"
+        title="Previous days"
       >
-        <span class="day-name">{{ getDayName(date) }}</span>
-        <span class="day-number">{{ getDayNumber(date) }}</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+
+      <div class="date-range-center">
+        <span class="date-range-text">{{ dateRangeLabel }}</span>
+        <button
+          v-if="offsetDays && offsetDays > 0"
+          class="today-jump-btn"
+          @click="emit('resetToday')"
+          title="Return to today"
+        >
+          Today
+        </button>
+      </div>
+
+      <button
+        class="nav-arrow-btn"
+        :disabled="!offsetDays || offsetDays <= 0"
+        @click="emit('nextDays')"
+        aria-label="Next days"
+        title="Next days"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
       </button>
     </div>
+
+    <div class="habit-table">
+      <!-- Header -->
+      <div class="table-header">
+        <div class="habit-name-header"></div>
+        <button
+          v-for="date in dates"
+          :key="date"
+          class="date-header"
+          @click="emit('clickDate', date)"
+          :aria-label="`View details for ${date}`"
+        >
+          <span class="day-name">{{ getDayName(date) }}</span>
+          <span class="day-number">{{ getDayNumber(date) }}</span>
+        </button>
+      </div>
 
     <!-- Empty State -->
     <div v-if="habits.length === 0" class="empty-state">
@@ -89,7 +134,7 @@ function getCellClass(habit: Habit, date: string): string {
         role="button"
         tabindex="0"
         :aria-label="`View details for ${habit.name}`"
-        @click="(e) => handleRowClick(habit.id, e)"
+        @click="() => handleRowClick(habit.id)"
         @keydown.enter="emit('clickHabit', habit.id)"
         @touchstart="startPress(habit)"
         @touchend="cancelPress"
@@ -123,9 +168,83 @@ function getCellClass(habit: Habit, date: string): string {
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <style scoped>
+.habit-table-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.table-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0.6rem;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+}
+
+.nav-arrow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-arrow-btn:hover:not(:disabled) {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.nav-arrow-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.date-range-center {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.date-range-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.today-jump-btn {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  min-height: auto;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+  line-height: 1.2;
+}
+
+.today-jump-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.04);
+}
+
 .habit-table {
   background: var(--bg-secondary);
   border-radius: 12px;

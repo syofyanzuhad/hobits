@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useHabitStore } from '@/stores/habitStore'
 import { useToastStore } from '@/stores/toastStore'
-import { getLastNDays } from '@/utils/dateUtils'
+import { getNDays } from '@/utils/dateUtils'
 import { exportData, importData } from '@/utils/storageUtils'
 import HabitTable from '@/components/dashboard/HabitTable.vue'
 import AddHabitModal from '@/components/dashboard/AddHabitModal.vue'
@@ -24,6 +24,7 @@ const showEditModal = ref(false)
 const showDeleteConfirm = ref(false)
 const habitToDelete = ref<string | null>(null)
 const habitToEditId = ref<string | null>(null)
+const dateOffset = ref(0)
 
 const { isInstallable, isInstalled, installApp } = usePWAInstall()
 
@@ -38,7 +39,21 @@ async function handleInstall() {
 
 const habits = computed(() => habitStore.habits)
 const habitToEdit = computed(() => habitStore.habits.find(h => h.id === habitToEditId.value))
-const dates = computed(() => getLastNDays(5))
+const dates = computed(() => getNDays(5, dateOffset.value))
+
+function prevDays() {
+  dateOffset.value += 1
+}
+
+function nextDays() {
+  if (dateOffset.value > 0) {
+    dateOffset.value -= 1
+  }
+}
+
+function resetToday() {
+  dateOffset.value = 0
+}
 
 onMounted(() => {
   habitStore.loadFromStorage()
@@ -189,11 +204,15 @@ function cancelDelete() {
       <HabitTable
         :habits="habits"
         :dates="dates"
+        :offset-days="dateOffset"
         @toggle="toggleCompletion"
         @click-habit="goToDetail"
         @click-date="goToDayDetail"
         @delete="handleDeleteRequest"
         @edit="handleEditRequest"
+        @prev-days="prevDays"
+        @next-days="nextDays"
+        @reset-today="resetToday"
       />
     </main>
 
